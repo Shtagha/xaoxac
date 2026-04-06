@@ -2,11 +2,73 @@
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://cdn.tailwindcss.com"></script>
     <title>Komorebi Space</title>
+    <style>
+        /* 1. Hiệu ứng nắng lóe (Light Leak) */
+        .sun-glare {
+            position: fixed;
+            top: -10%;
+            right: -10%;
+            width: 60%;
+            height: 60%;
+            background: radial-gradient(circle, rgba(255,253,230,0.4) 0%, rgba(255,255,255,0) 70%);
+            filter: blur(40px);
+            z-index: 0;
+            pointer-events: none;
+            animation: pulse-glare 8s infinite alternate;
+        }
+
+        @keyframes pulse-glare {
+            0% { opacity: 0.3; transform: scale(1); }
+            100% { opacity: 0.6; transform: scale(1.1); }
+        }
+
+        /* 2. Hiệu ứng lá rơi */
+        .leaf-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+            overflow: hidden;
+        }
+
+        .leaf {
+            position: absolute;
+            display: block;
+            width: 15px;
+            height: 15px;
+            background: #8c7851;
+            opacity: 0.3;
+            border-radius: 2px 10px; /* Hình dáng lá đơn giản */
+            animation: fall linear infinite;
+        }
+
+        @keyframes fall {
+            0% { transform: translateY(-10vh) translateX(0) rotate(0deg); opacity: 0; }
+            10% { opacity: 0.3; }
+            90% { opacity: 0.3; }
+            100% { transform: translateY(110vh) translateX(100px) rotate(720deg); opacity: 0; }
+        }
+
+        /* Tăng hiệu ứng hover cho nút */
+        .nav-link:hover {
+            letter-spacing: 0.2em;
+            box-shadow: 0 10px 20px -10px rgba(140, 120, 81, 0.3);
+        }
+    </style>
 </head>
-<body class="bg-[#fdfcfb] text-[#4a4543] flex items-center justify-center min-h-screen font-sans p-6">
-    <div class="text-center p-10 md:p-16 bg-white shadow-sm rounded-[2rem] border border-stone-100 max-w-md w-full">
+<body class="bg-[#fdfcfb] text-[#4a4543] flex items-center justify-center min-h-screen font-sans p-6 overflow-hidden">
+    
+    <div class="sun-glare"></div>
+
+    <div class="leaf-container" id="leaf-container"></div>
+
+    <div class="relative z-10 text-center p-10 md:p-16 bg-white/80 backdrop-blur-sm shadow-sm rounded-[2rem] border border-stone-100 max-w-md w-full">
         <h1 class="text-3xl font-light tracking-[0.15em] uppercase text-[#8c7851] whitespace-nowrap">
             Komorebi-xào xạc
         </h1>
@@ -15,18 +77,37 @@
         <div class="mt-8 h-px bg-stone-200 w-12 mx-auto"></div>
 
         <div class="mt-10 flex flex-col gap-4">
-            <a href="#" class="py-3 px-6 border border-[#d4cfc7] rounded-full text-[13px] tracking-[0.1em] text-[#8c7851] hover:bg-[#8c7851] hover:text-white transition-all duration-300 uppercase">
+            <a href="#" class="nav-link py-3 px-6 border border-[#d4cfc7] rounded-full text-[13px] tracking-[0.1em] text-[#8c7851] hover:bg-[#8c7851] hover:text-white transition-all duration-500 uppercase" onmouseover="playLeafSound()">
                 Keyring
             </a>
-            <a href="kieng.html" class="py-3 px-6 border border-[#d4cfc7] rounded-full text-[13px] tracking-[0.1em] text-[#8c7851] hover:bg-[#8c7851] hover:text-white transition-all duration-300 uppercase">
+            <a href="kieng.html" class="nav-link py-3 px-6 border border-[#d4cfc7] rounded-full text-[13px] tracking-[0.1em] text-[#8c7851] hover:bg-[#8c7851] hover:text-white transition-all duration-500 uppercase" onmouseover="playLeafSound()">
                 Kiềng đồng hồ
             </a>
-            <a href="lac.html" class="py-3 px-6 border border-[#d4cfc7] rounded-full text-[13px] tracking-[0.1em] text-[#8c7851] hover:bg-[#8c7851] hover:text-white transition-all duration-300 uppercase">
+            <a href="lac.html" class="nav-link py-3 px-6 border border-[#d4cfc7] rounded-full text-[13px] tracking-[0.1em] text-[#8c7851] hover:bg-[#8c7851] hover:text-white transition-all duration-500 uppercase" onmouseover="playLeafSound()">
                 Lắc đồng hồ
             </a>
         </div>
 
         <p class="mt-12 text-[10px] tracking-[0.3em] text-stone-300 uppercase italic">Collection 2026</p>
+        
+        <button onclick="toggleAmbience()" id="audio-control" class="mt-4 text-[9px] text-stone-400 border border-stone-200 px-2 py-1 rounded hover:bg-stone-50">
+            Bật âm thanh nền 🌿
+        </button>
     </div>
-</body>
-</html>
+
+    <audio id="ambience" loop src="https://www.soundjay.com/nature/sounds/wind-leaves-purring-01.mp3"></audio>
+    <audio id="bell" src="https://www.soundjay.com/clock/sounds/bell-ringing-01c.mp3"></audio>
+    <audio id="leaf-rustle" src="https://www.soundjay.com/mechanical/sounds/paper-rustle-1.mp3"></audio>
+
+    <script>
+        // Tạo lá rơi ngẫu nhiên
+        const container = document.getElementById('leaf-container');
+        const leafCount = 15;
+
+        for (let i = 0; i < leafCount; i++) {
+            const leaf = document.createElement('div');
+            leaf.className = 'leaf';
+            leaf.style.left = Math.random() * 100 + '%';
+            leaf.style.animationDuration = (Math.random() * 5 + 5) + 's';
+            leaf.style.animationDelay = Math.random() * 5 + 's';
+            leaf.style.opacity = Math.random() *
