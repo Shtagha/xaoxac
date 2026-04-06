@@ -6,26 +6,26 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <title>Komorebi Space</title>
     <style>
-        /* 1. Hiệu ứng nắng lóe (Light Leak) - Cải tiến để rõ hơn */
+        /* 1. Hiệu ứng nắng lóe (Light Leak) */
         .sun-glare {
             position: fixed;
-            top: -150px;
-            right: -150px;
-            width: 600px;
-            height: 600px;
-            background: radial-gradient(circle, rgba(255, 248, 200, 0.5) 0%, rgba(255, 255, 255, 0) 70%);
-            filter: blur(60px);
-            z-index: 5;
+            top: -10%;
+            right: -10%;
+            width: 60vw;
+            height: 60vw;
+            background: radial-gradient(circle, rgba(255, 250, 215, 0.4) 0%, rgba(255, 255, 255, 0) 70%);
+            filter: blur(80px);
+            z-index: 1;
             pointer-events: none;
             animation: pulse-glare 10s infinite alternate ease-in-out;
         }
 
         @keyframes pulse-glare {
-            0% { opacity: 0.4; transform: scale(1) translate(0, 0); }
-            100% { opacity: 0.8; transform: scale(1.2) translate(-50px, 50px); }
+            0% { opacity: 0.3; transform: scale(1); }
+            100% { opacity: 0.6; transform: scale(1.15) translate(-20px, 20px); }
         }
 
-        /* 2. Hiệu ứng lá rơi - Chỉnh sửa để nhìn rõ hơn */
+        /* 2. Hiệu ứng lá rơi */
         .leaf-container {
             position: fixed;
             top: 0;
@@ -38,47 +38,41 @@
 
         .leaf {
             position: absolute;
-            background: #d4a373; /* Màu vàng lá khô */
-            border-radius: 0 80% 0 80%; /* Dáng hình chiếc lá */
-            opacity: 0.6;
+            background: #d1c1a5; /* Màu beige lá khô */
+            border-radius: 2px 12px;
+            opacity: 0.4;
             animation: fall linear infinite;
         }
 
         @keyframes fall {
-            0% {
-                top: -10%;
-                transform: translateX(0) rotate(0deg);
+            0% { 
+                top: -10%; 
+                transform: translateX(0) rotate(0deg); 
+                opacity: 0; 
             }
-            25% {
-                transform: translateX(50px) rotate(90deg);
-            }
-            50% {
-                transform: translateX(-50px) rotate(180deg);
-            }
-            75% {
-                transform: translateX(50px) rotate(270deg);
-            }
-            100% {
-                top: 110%;
-                transform: translateX(-20px) rotate(360deg);
+            15% { opacity: 0.4; }
+            85% { opacity: 0.4; }
+            100% { 
+                top: 110%; 
+                transform: translateX(120px) rotate(480deg); 
+                opacity: 0; 
             }
         }
 
-        /* Làm mịn chuyển động cho Card */
-        .main-card {
-            backdrop-filter: blur(8px);
-            -webkit-backdrop-filter: blur(8px);
+        /* Làm mờ hậu cảnh card */
+        .glass-card {
+            backdrop-filter: blur(5px);
+            -webkit-backdrop-filter: blur(5px);
         }
     </style>
 </head>
 <body class="bg-[#fdfcfb] text-[#4a4543] flex items-center justify-center min-h-screen font-sans p-6 overflow-hidden">
     
     <div class="sun-glare"></div>
-
     <div class="leaf-container" id="leaf-container"></div>
 
-    <div class="main-card relative z-10 text-center p-10 md:p-16 bg-white/70 shadow-xl rounded-[3rem] border border-stone-100 max-w-md w-full">
-        <h1 class="text-3xl font-light tracking-[0.15em] uppercase text-[#8c7851]">
+    <div class="glass-card relative z-10 text-center p-10 md:p-16 bg-white/85 shadow-sm rounded-[2.5rem] border border-stone-100 max-w-md w-full">
+        <h1 class="text-3xl font-light tracking-[0.15em] uppercase text-[#8c7851] whitespace-nowrap">
             Komorebi-xào xạc
         </h1>
         <p class="mt-4 italic text-stone-400 font-serif text-sm">Ánh nắng xuyên qua kẽ lá.</p>
@@ -86,78 +80,7 @@
         <div class="mt-8 h-px bg-stone-200 w-12 mx-auto"></div>
 
         <div class="mt-10 flex flex-col gap-4">
-            <a href="#" onmouseover="playLeafSound()" class="py-3 px-6 border border-[#d4cfc7] rounded-full text-[13px] tracking-[0.1em] text-[#8c7851] hover:bg-[#8c7851] hover:text-white transition-all duration-500 uppercase">
+            <a href="#" class="py-3 px-6 border border-[#d4cfc7] rounded-full text-[13px] tracking-[0.1em] text-[#8c7851] hover:bg-[#8c7851] hover:text-white transition-all duration-500 uppercase">
                 Keyring
             </a>
-            <a href="kieng.html" onmouseover="playLeafSound()" class="py-3 px-6 border border-[#d4cfc7] rounded-full text-[13px] tracking-[0.1em] text-[#8c7851] hover:bg-[#8c7851] hover:text-white transition-all duration-500 uppercase">
-                Kiềng đồng hồ
-            </a>
-            <a href="lac.html" onmouseover="playLeafSound()" class="py-3 px-6 border border-[#d4cfc7] rounded-full text-[13px] tracking-[0.1em] text-[#8c7851] hover:bg-[#8c7851] hover:text-white transition-all duration-500 uppercase">
-                Lắc đồng hồ
-            </a>
-        </div>
-
-        <button onclick="initSound()" id="sound-btn" class="mt-12 text-[10px] tracking-[0.2em] text-[#8c7851] uppercase border border-[#8c7851]/20 px-4 py-2 rounded-full hover:bg-stone-50 transition-colors">
-            Chạm để nghe tiếng lá 🌿
-        </button>
-        
-        <p class="mt-6 text-[9px] tracking-[0.3em] text-stone-300 uppercase italic">Collection 2026</p>
-    </div>
-
-    <audio id="bg-wind" loop src="https://assets.mixkit.co/active_storage/sfx/2526/2526-preview.mp3"></audio>
-    <audio id="bell-sfx" src="https://assets.mixkit.co/active_storage/sfx/1070/1070-preview.mp3"></audio>
-    <audio id="rustle-sfx" src="https://www.soundjay.com/mechanical/sounds/paper-rustle-1.mp3"></audio>
-
-    <script>
-        // Tạo lá rơi
-        const leafContainer = document.getElementById('leaf-container');
-        function createLeaf() {
-            const leaf = document.createElement('div');
-            leaf.className = 'leaf';
-            
-            // Kích thước ngẫu nhiên
-            const size = Math.random() * 10 + 10 + 'px';
-            leaf.style.width = size;
-            leaf.style.height = size;
-            
-            leaf.style.left = Math.random() * 100 + '%';
-            leaf.style.animationDuration = (Math.random() * 4 + 6) + 's'; // 6-10 giây
-            leaf.style.opacity = Math.random() * 0.5 + 0.2;
-            
-            leafContainer.appendChild(leaf);
-            
-            // Xóa lá sau khi rơi xong để tránh nặng máy
-            setTimeout(() => { leaf.remove(); }, 10000);
-        }
-
-        // Cứ mỗi 800ms tạo 1 chiếc lá mới
-        setInterval(createLeaf, 800);
-
-        // Xử lý âm thanh
-        let isStarted = false;
-        function initSound() {
-            const wind = document.getElementById('bg-wind');
-            const bell = document.getElementById('bell-sfx');
-            
-            if(!isStarted) {
-                wind.volume = 0.3;
-                wind.play();
-                bell.play();
-                document.getElementById('sound-btn').innerText = "Đang phát âm thanh...";
-                isStarted = true;
-            } else {
-                wind.pause();
-                document.getElementById('sound-btn').innerText = "Chạm để nghe tiếng lá 🌿";
-                isStarted = false;
-            }
-        }
-
-        function playLeafSound() {
-            const rustle = document.getElementById('rustle-sfx');
-            rustle.volume = 0.2;
-            rustle.currentTime = 0;
-            rustle.play();
-        }
-    </script>
-</body>
-</html>
+            <a href="kieng.html" class="py-3 px-6 border border-[#d4cfc7] rounded-full text-[13px] tracking-[0.1em] text-[#8c7851] hover:bg-[#8c7851] hover:
